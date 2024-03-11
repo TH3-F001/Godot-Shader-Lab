@@ -1,18 +1,63 @@
-[gd_scene load_steps=18 format=3 uid="uid://cd25bw4nboqe4"]
+[gd_scene load_steps=23 format=3 uid="uid://cd25bw4nboqe4"]
 
+[ext_resource type="Shader" path="res://wax_on_wax_off/base_graph_2d.gdshader" id="1_bfcvd"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/blin_wyv_cosine_approximation_2d.gdshader" id="1_clbj8"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/sym_dbl_polynomial_sigmoids_2d.gdshader" id="2_5gbmf"]
-[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/quadratic_through_given_point_2d.gdshader" id="2_5y428"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_cub_seat_with_lin_blend_2d.gdshader" id="2_4346g"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_cub_seat_2d.gdshader" id="2_snc88"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_odd_polynomial_seat_2d.gdshader" id="2_w2lyw"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/exponential_shaping/expo_easing_2d.gdshader" id="7_320nn"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hpi1t"]
-shader = ExtResource("2_5y428")
-shader_parameter/_a = 0.231
-shader_parameter/_b = 0.066
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i3b70"]
+shader = ExtResource("1_bfcvd")
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_64ry8"]
+
+[sub_resource type="Shader" id="Shader_kjwm8"]
+code = "shader_type canvas_item;
+
+// Quadratic Through a Given Point - smooth parabolic easing
+// defines an axis aligned quadratic (parabolo) which passes through a user defined point (a,b)
+// not all points in the unit square will produce curves that pass through the locations 0,- and 1,1
+uniform float x_pos : hint_range(0.01, 0.99, 0.001) = 0.5;
+uniform float y_pos : hint_range(0.01, 0.99, 0.001) = 0.5; 
+
+
+float quad_through_given_point(float x, float a, float b) {
+	float epsilon = 0.00001;
+	float min_a = 0.0 + epsilon;
+	float max_a = 1.0 - epsilon;
+	float min_b = 0.0;
+	float max_b = 1.0;
+	
+	a = min(max_a, max(min_a, a));
+	b = min(max_b, max(min_b, b));
+	
+	float A = (1. - b) / (1. - a) - (b / a);
+	float B = (A * (a * a) - b) / a;
+	float y = A * (x * x) - B * (x);
+	y = min(1, max(0 ,y));
+	
+	return y;
+}
+
+float plot(vec2 uv, float percent) {
+	return smoothstep(percent - 0.01, percent, uv.y) - smoothstep(percent, percent + 0.01, uv.y);
+}
+
+void fragment() {
+	vec2 uv = vec2(1. - UV.x, UV.y);
+	float y = quad_through_given_point(uv.x,  1. - x_pos,  1. - y_pos);	
+	vec3 color = vec3(1.0 - y);
+	float percent = plot(uv, y);
+	color = (1.0 - percent) * color + percent * vec3(0., 1., 0.0);
+	COLOR = vec4(color, 1.);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jx5an"]
+shader = SubResource("Shader_kjwm8")
+shader_parameter/x_pos = 0.308
+shader_parameter/y_pos = 0.01
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bob3v"]
 shader = ExtResource("2_5gbmf")
@@ -35,7 +80,7 @@ shader_parameter/blend = 0.795
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_ux3yo"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ysqk3"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4by5w"]
 shader = ExtResource("2_snc88")
 shader_parameter/control_point = 0.615
 shader_parameter/seat_height = 0.805
@@ -45,11 +90,17 @@ shader = ExtResource("1_clbj8")
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_p55y6"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0wtue"]
+shader = ExtResource("7_320nn")
+shader_parameter/ease = 0.794
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_e7jwi"]
+
 [node name="WaxOnWaxOff2D" type="CanvasLayer"]
 
 [node name="BaseGraph" type="TextureRect" parent="."]
 visible = false
-material = SubResource("ShaderMaterial_hpi1t")
+material = SubResource("ShaderMaterial_i3b70")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -58,9 +109,10 @@ grow_vertical = 2
 texture = SubResource("CanvasTexture_64ry8")
 
 [node name="PolynomialShaping" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="QuadraticThroughGivenPoint" type="TextureRect" parent="PolynomialShaping"]
-material = SubResource("ShaderMaterial_hpi1t")
+material = SubResource("ShaderMaterial_jx5an")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -100,7 +152,7 @@ texture = SubResource("CanvasTexture_ux3yo")
 
 [node name="DoubleCubicSeat" type="TextureRect" parent="PolynomialShaping"]
 visible = false
-material = SubResource("ShaderMaterial_ysqk3")
+material = SubResource("ShaderMaterial_4by5w")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -117,3 +169,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("CanvasTexture_p55y6")
+
+[node name="ExponentialShaping" type="CanvasLayer" parent="."]
+
+[node name="ExponentialEasing" type="TextureRect" parent="ExponentialShaping"]
+material = SubResource("ShaderMaterial_0wtue")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_e7jwi")

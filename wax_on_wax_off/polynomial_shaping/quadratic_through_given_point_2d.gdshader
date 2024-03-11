@@ -3,8 +3,8 @@ shader_type canvas_item;
 // Quadratic Through a Given Point - smooth parabolic easing
 // defines an axis aligned quadratic (parabolo) which passes through a user defined point (a,b)
 // not all points in the unit square will produce curves that pass through the locations 0,- and 1,1
-uniform float _a : hint_range(0.01, 0.99, 0.001) = 0.5;
-uniform float _b : hint_range(0.01, 0.99, 0.001) = 0.5; 
+uniform float x_pos : hint_range(0.01, 0.99, 0.001) = 0.5;
+uniform float y_pos : hint_range(0.01, 0.99, 0.001) = 0.5; 
 
 
 float quad_through_given_point(float x, float a, float b) {
@@ -31,7 +31,7 @@ float plot(vec2 uv, float percent) {
 
 void fragment() {
 	vec2 uv = vec2(1. - UV.x, UV.y);
-	float y = quad_through_given_point(uv.x, _a, _b);	
+	float y = quad_through_given_point(uv.x,  1. - x_pos,  1. - y_pos);	
 	vec3 color = vec3(1.0 - y);
 	float percent = plot(uv, y);
 	color = (1.0 - percent) * color + percent * vec3(0., 1., 0.0);
