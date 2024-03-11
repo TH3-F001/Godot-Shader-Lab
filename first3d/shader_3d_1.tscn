@@ -1,0 +1,62 @@
+[gd_scene load_steps=13 format=3 uid="uid://c0jeun5hjo8ul"]
+
+[ext_resource type="Shader" path="res://first3d/vertshader3D_1.gdshader" id="1_rqoy5"]
+[ext_resource type="Script" path="res://first3d/shader_3d_1.gd" id="2_jdaxk"]
+[ext_resource type="Texture2D" uid="uid://qe5ne7xkkidb" path="res://first3d/tex_shader_3d_1.tres" id="2_t5d4o"]
+[ext_resource type="Script" path="res://first3d/CharacterBody3D.gd" id="4_vdd5b"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kd2qs"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vbsr8"]
+as_normal_map = true
+noise = SubResource("FastNoiseLite_kd2qs")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nbw8c"]
+render_priority = 1
+shader = ExtResource("1_rqoy5")
+shader_parameter/height_scale = 0.16
+shader_parameter/noise = ExtResource("2_t5d4o")
+shader_parameter/normalmap = SubResource("NoiseTexture2D_vbsr8")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tu3dt"]
+material = SubResource("ShaderMaterial_nbw8c")
+size = Vector2(10, 10)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ep4c3"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_8j8w6"]
+
+[sub_resource type="Sky" id="Sky_rko1o"]
+sky_material = SubResource("PanoramaSkyMaterial_8j8w6")
+process_mode = 3
+
+[sub_resource type="Environment" id="Environment_h4sno"]
+sky = SubResource("Sky_rko1o")
+ambient_light_source = 3
+
+[node name="Shader3D1" type="MeshInstance3D"]
+ignore_occlusion_culling = true
+mesh = SubResource("PlaneMesh_tu3dt")
+script = ExtResource("2_jdaxk")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.495459, -0.646532, 0.5801, 0, 0.667833, 0.744312, -0.868632, 0.368776, -0.330883, 0, 0, 0)
+light_color = Color(1, 1, 0.92549, 1)
+light_energy = 3.0
+shadow_enabled = true
+directional_shadow_max_distance = 200.0
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+motion_mode = 1
+script = ExtResource("4_vdd5b")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 0.929513, 0.36879, 0, -0.36879, 0.929513, 0.0244298, 0.868339, 1.63697)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("SphereShape3D_ep4c3")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_h4sno")

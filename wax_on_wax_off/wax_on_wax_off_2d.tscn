@@ -1,0 +1,119 @@
+[gd_scene load_steps=18 format=3 uid="uid://cd25bw4nboqe4"]
+
+[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/blin_wyv_cosine_approximation_2d.gdshader" id="1_clbj8"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/sym_dbl_polynomial_sigmoids_2d.gdshader" id="2_5gbmf"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/quadratic_through_given_point_2d.gdshader" id="2_5y428"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_cub_seat_with_lin_blend_2d.gdshader" id="2_4346g"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_cub_seat_2d.gdshader" id="2_snc88"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_odd_polynomial_seat_2d.gdshader" id="2_w2lyw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hpi1t"]
+shader = ExtResource("2_5y428")
+shader_parameter/_a = 0.231
+shader_parameter/_b = 0.066
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_64ry8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bob3v"]
+shader = ExtResource("2_5gbmf")
+shader_parameter/steepness = 31
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_sqna6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_q25fp"]
+shader = ExtResource("2_w2lyw")
+shader_parameter/control_point = 0.649
+shader_parameter/height = 0.82
+shader_parameter/plateau = 1.883
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_vw54r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y7e4t"]
+shader = ExtResource("2_4346g")
+shader_parameter/control_point = 0.625
+shader_parameter/blend = 0.795
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_ux3yo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ysqk3"]
+shader = ExtResource("2_snc88")
+shader_parameter/control_point = 0.615
+shader_parameter/seat_height = 0.805
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ej5yk"]
+shader = ExtResource("1_clbj8")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_p55y6"]
+
+[node name="WaxOnWaxOff2D" type="CanvasLayer"]
+
+[node name="BaseGraph" type="TextureRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_hpi1t")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_64ry8")
+
+[node name="PolynomialShaping" type="CanvasLayer" parent="."]
+
+[node name="QuadraticThroughGivenPoint" type="TextureRect" parent="PolynomialShaping"]
+material = SubResource("ShaderMaterial_hpi1t")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_64ry8")
+
+[node name="SymmetricDoublePolynomialSigmoids" type="TextureRect" parent="PolynomialShaping"]
+visible = false
+material = SubResource("ShaderMaterial_bob3v")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_sqna6")
+
+[node name="DoubleOddPolynomialSeat" type="TextureRect" parent="PolynomialShaping"]
+visible = false
+material = SubResource("ShaderMaterial_q25fp")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_vw54r")
+
+[node name="DoubleCubicSeatWithLinearBlend" type="TextureRect" parent="PolynomialShaping"]
+visible = false
+material = SubResource("ShaderMaterial_y7e4t")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_ux3yo")
+
+[node name="DoubleCubicSeat" type="TextureRect" parent="PolynomialShaping"]
+visible = false
+material = SubResource("ShaderMaterial_ysqk3")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_64ry8")
+
+[node name="BlinnWyvillCosineAproximation" type="TextureRect" parent="PolynomialShaping"]
+visible = false
+material = SubResource("ShaderMaterial_ej5yk")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_p55y6")

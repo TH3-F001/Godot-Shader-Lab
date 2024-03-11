@@ -1,0 +1,47 @@
+[gd_resource type="VisualShader" load_steps=4 format=3 uid="uid://5ttagmcwyyws"]
+
+[sub_resource type="VisualShaderNodeFresnel" id="VisualShaderNodeFresnel_m3xnr"]
+output_port_for_preview = 0
+default_input_values = [2, false, 3, 8.46]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_c2bh8"]
+input_name = "normal"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_ul85i"]
+input_name = "view"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+
+
+
+void fragment() {
+// Input:3
+	vec3 n_out3p0 = NORMAL;
+
+
+// Input:4
+	vec3 n_out4p0 = VIEW;
+
+
+// Fresnel:2
+	float n_in2p3 = 8.46000;
+	float n_out2p0 = pow(1.0 - clamp(dot(n_out3p0, n_out4p0), 0.0, 1.0), n_in2p3);
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0);
+
+
+}
+"
+nodes/fragment/0/position = Vector2(920, 280)
+nodes/fragment/2/node = SubResource("VisualShaderNodeFresnel_m3xnr")
+nodes/fragment/2/position = Vector2(500, 380)
+nodes/fragment/3/node = SubResource("VisualShaderNodeInput_c2bh8")
+nodes/fragment/3/position = Vector2(0, 320)
+nodes/fragment/4/node = SubResource("VisualShaderNodeInput_ul85i")
+nodes/fragment/4/position = Vector2(0, 440)
+nodes/fragment/connections = PackedInt32Array(3, 0, 2, 0, 4, 0, 2, 1, 2, 0, 0, 0)

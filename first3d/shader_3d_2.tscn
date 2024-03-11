@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkrluqh5bv847"]
+
+[ext_resource type="Shader" path="res://first3d/fragshader_3d_2.gdshader" id="1_2pgl2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8wr01"]
+render_priority = 0
+shader = ExtResource("1_2pgl2")
+shader_parameter/color = Color(0.0117647, 0, 0.4, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bloap"]
+material = SubResource("ShaderMaterial_8wr01")
+subdivide_width = 200
+subdivide_depth = 200
+
+[node name="Shader3D2" type="MeshInstance3D"]
+mesh = SubResource("PlaneMesh_bloap")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05583, 0)

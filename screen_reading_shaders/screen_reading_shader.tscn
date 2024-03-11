@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://c48ifc8e2p5j3"]
+
+[ext_resource type="Shader" path="res://screen_reading_shaders/screen_reading_shader.gdshader" id="1_mhasy"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fw2xh"]
+render_priority = 0
+shader = ExtResource("1_mhasy")
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_4eoi2"]
+material = SubResource("ShaderMaterial_fw2xh")
+subdivide_width = 200
+subdivide_depth = 200
+
+[node name="ScreenReadingShader" type="MeshInstance3D"]
+mesh = SubResource("PlaneMesh_4eoi2")
