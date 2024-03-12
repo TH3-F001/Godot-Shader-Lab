@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cd25bw4nboqe4"]
+[gd_scene load_steps=40 format=3 uid="uid://cd25bw4nboqe4"]
 
 [ext_resource type="Shader" path="res://wax_on_wax_off/base_graph_2d.gdshader" id="1_bfcvd"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/blin_wyv_cosine_approximation_2d.gdshader" id="1_clbj8"]
@@ -7,6 +7,12 @@
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_cub_seat_2d.gdshader" id="2_snc88"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/dbl_odd_polynomial_seat_2d.gdshader" id="2_w2lyw"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/exponential_shaping/expo_easing_2d.gdshader" id="7_320nn"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/exponential_shaping/dbl_expo_seat.gdshader" id="8_li4ck"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/exponential_shaping/logistic_sigmoid.gdshader" id="9_4wy14"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/circular_ease.gdshader" id="10_4og5j"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_circle_seat.gdshader" id="11_fgc32"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_circle_sigmoid.gdshader" id="12_r6squ"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_elliptic_seat.gdshader" id="13_7u3ic"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i3b70"]
 shader = ExtResource("1_bfcvd")
@@ -61,7 +67,7 @@ shader_parameter/y_pos = 0.01
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bob3v"]
 shader = ExtResource("2_5gbmf")
-shader_parameter/steepness = 31
+shader_parameter/growth_rate = 1
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_sqna6"]
 
@@ -92,9 +98,44 @@ shader = ExtResource("1_clbj8")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0wtue"]
 shader = ExtResource("7_320nn")
-shader_parameter/ease = 0.794
+shader_parameter/ease = 0.01
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_e7jwi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6opem"]
+shader = ExtResource("8_li4ck")
+shader_parameter/control_point = 0.526
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_vhsmt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1beay"]
+shader = ExtResource("9_4wy14")
+shader_parameter/_growth_amount = 0.01
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_y6pro"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y8inh"]
+shader = ExtResource("10_4og5j")
+shader_parameter/ease_in = false
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_2n4n0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5d0ko"]
+shader = ExtResource("11_fgc32")
+shader_parameter/control_point = 0.01
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_iiafq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gd83e"]
+shader = ExtResource("12_r6squ")
+shader_parameter/growth = 0.469
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_svfg8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cutgs"]
+shader = ExtResource("13_7u3ic")
+shader_parameter/plateau = 0.434
+shader_parameter/height = 0.5
 
 [node name="WaxOnWaxOff2D" type="CanvasLayer"]
 
@@ -109,9 +150,9 @@ grow_vertical = 2
 texture = SubResource("CanvasTexture_64ry8")
 
 [node name="PolynomialShaping" type="CanvasLayer" parent="."]
-visible = false
 
 [node name="QuadraticThroughGivenPoint" type="TextureRect" parent="PolynomialShaping"]
+visible = false
 material = SubResource("ShaderMaterial_jx5an")
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,6 +167,8 @@ material = SubResource("ShaderMaterial_bob3v")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_right = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("CanvasTexture_sqna6")
@@ -171,8 +214,10 @@ grow_vertical = 2
 texture = SubResource("CanvasTexture_p55y6")
 
 [node name="ExponentialShaping" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="ExponentialEasing" type="TextureRect" parent="ExponentialShaping"]
+visible = false
 material = SubResource("ShaderMaterial_0wtue")
 anchors_preset = 15
 anchor_right = 1.0
@@ -180,3 +225,63 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("CanvasTexture_e7jwi")
+
+[node name="DoubleExponentialSeat" type="TextureRect" parent="ExponentialShaping"]
+visible = false
+material = SubResource("ShaderMaterial_6opem")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_vhsmt")
+
+[node name="LogisticSigmoid" type="TextureRect" parent="ExponentialShaping"]
+material = SubResource("ShaderMaterial_1beay")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_y6pro")
+
+[node name="CircularAndElipticalShaping" type="CanvasLayer" parent="."]
+
+[node name="CircularLerp" type="TextureRect" parent="CircularAndElipticalShaping"]
+visible = false
+material = SubResource("ShaderMaterial_y8inh")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_2n4n0")
+
+[node name="DoubleCircleSeat" type="TextureRect" parent="CircularAndElipticalShaping"]
+visible = false
+material = SubResource("ShaderMaterial_5d0ko")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_iiafq")
+
+[node name="DoubleCircleSigmoid" type="TextureRect" parent="CircularAndElipticalShaping"]
+visible = false
+material = SubResource("ShaderMaterial_gd83e")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_svfg8")
+
+[node name="DoubleEllipticSeat" type="TextureRect" parent="CircularAndElipticalShaping"]
+material = SubResource("ShaderMaterial_cutgs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_iiafq")
