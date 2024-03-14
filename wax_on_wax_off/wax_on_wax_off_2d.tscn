@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://cd25bw4nboqe4"]
+[gd_scene load_steps=46 format=3 uid="uid://cd25bw4nboqe4"]
 
 [ext_resource type="Shader" path="res://wax_on_wax_off/base_graph_2d.gdshader" id="1_bfcvd"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/polynomial_shaping/blin_wyv_cosine_approximation_2d.gdshader" id="1_clbj8"]
@@ -13,6 +13,8 @@
 [ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_circle_seat.gdshader" id="11_fgc32"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_circle_sigmoid.gdshader" id="12_r6squ"]
 [ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_elliptic_seat.gdshader" id="13_7u3ic"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_elliptic_sigmoid.gdshader" id="14_i50p3"]
+[ext_resource type="Shader" path="res://wax_on_wax_off/circular_shaping/dbl_lin_circular_fillet.gdshader" id="15_dyplg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i3b70"]
 shader = ExtResource("1_bfcvd")
@@ -134,8 +136,23 @@ shader_parameter/growth = 0.469
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cutgs"]
 shader = ExtResource("13_7u3ic")
-shader_parameter/plateau = 0.434
-shader_parameter/height = 0.5
+shader_parameter/plateau = 0.534
+shader_parameter/height = 0.84
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8hnvv"]
+shader = ExtResource("14_i50p3")
+shader_parameter/Horizontal = 0.5
+shader_parameter/Vertical = 0.5
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_o6rm6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ru4b2"]
+shader = ExtResource("15_dyplg")
+shader_parameter/A = 0.335
+shader_parameter/B = 0.802
+shader_parameter/R = 0.582
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_a8mkk"]
 
 [node name="WaxOnWaxOff2D" type="CanvasLayer"]
 
@@ -278,6 +295,7 @@ grow_vertical = 2
 texture = SubResource("CanvasTexture_svfg8")
 
 [node name="DoubleEllipticSeat" type="TextureRect" parent="CircularAndElipticalShaping"]
+visible = false
 material = SubResource("ShaderMaterial_cutgs")
 anchors_preset = 15
 anchor_right = 1.0
@@ -285,3 +303,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("CanvasTexture_iiafq")
+
+[node name="DoubleEllipticSigmoid" type="TextureRect" parent="CircularAndElipticalShaping"]
+material = SubResource("ShaderMaterial_8hnvv")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_o6rm6")
+
+[node name="DoubleLinearWithCircularFillet" type="TextureRect" parent="CircularAndElipticalShaping"]
+material = SubResource("ShaderMaterial_ru4b2")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CanvasTexture_a8mkk")
